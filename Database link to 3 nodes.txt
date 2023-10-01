@@ -1,0 +1,17 @@
+-- Database link to 3 nodes
+
+CREATE PUBLIC DATABASE LINK hq
+    CONNECT TO system IDENTIFIED BY password
+USING '(description = (address_list =(address =(protocol =tcp)(host=LOCALHOST) 
+(port=1521)))(connect_data=(service_name=XEPDB1)))';
+
+CREATE PUBLIC DATABASE LINK brpdb
+    CONNECT TO system IDENTIFIED BY password
+USING '(description = (address_list =(address =(protocol =tcp)(host=192.168.77.90) 
+(port=1521)))(connect_data=(service_name=XEPDB1)))';
+
+
+CREATE PUBLIC DATABASE LINK brpdb2
+    CONNECT TO system IDENTIFIED BY password
+USING '(description = (address_list =(address =(protocol =tcp)(host=192.168.77.153) 
+(port=1521)))(connect_data=(service_name=XEPDB1)))';

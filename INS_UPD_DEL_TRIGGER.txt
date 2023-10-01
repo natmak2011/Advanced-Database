@@ -1,0 +1,100 @@
+--INSERT TRIGGER 
+create or replace NONEDITIONABLE trigger horz_insert_trigger
+after insert on vital.child_information_master
+for each row
+begin
+if(trunc(:new.c_registration_date) - trunc(:new.c_dob) <=90) then
+insert into vital.child_information@hq 
+(child_id,c_first_name,c_middle_name,c_last_name,c_sex,c_nationality,c_dob,c_registration_date)
+values
+(:new.child_id,:new.C_FIRST_NAME,:new.C_MIDDLE_NAME,:new.C_LAST_NAME,:new.C_SEX,:new.C_NATIONALITY,:new.C_DOB,sysdate);
+elsif(trunc(:new.c_registration_date) - trunc(:new.c_dob) >90) and (trunc(:new.c_registration_date) - trunc(:new.c_dob) <=365)  then
+insert into vital.child_information@brpdb
+(child_id,c_first_name,c_middle_name,c_last_name,c_sex,c_nationality,c_dob,c_registration_date)
+values
+(:new.child_id,:new.C_FIRST_NAME,:new.C_MIDDLE_NAME,:new.C_LAST_NAME,:new.C_SEX,:new.C_NATIONALITY,:new.C_DOB,sysdate);
+else
+insert into vital.child_information@brpdb2
+(child_id,c_first_name,c_middle_name,c_last_name,c_sex,c_nationality,c_dob,c_registration_date)
+values
+(:new.child_id,:new.C_FIRST_NAME,:new.C_MIDDLE_NAME,:new.C_LAST_NAME,:new.C_SEX,:new.C_NATIONALITY,:new.C_DOB,sysdate);
+end if;
+end;
+
+-- DELETE TRIGGER
+create or replace NONEDITIONABLE trigger horz_delete_trigger
+AFTER DELETE on vital.child_information_master
+for each row
+begin
+if(trunc(:new.c_registration_date) - trunc(:new.c_dob) <=90) then
+DELETE FROM  vital.child_information@hq WHERE CHILD_ID=:OLD.CHILD_ID;
+--commit;
+
+elsif(trunc(:new.c_registration_date) - trunc(:new.c_dob) >90) and (trunc(:new.c_registration_date) - trunc(:new.c_dob) <=365)  then
+DELETE FROM  vital.child_information@brpdb WHERE CHILD_ID=:OLD.CHILD_ID;
+--commit;
+else
+DELETE FROM  vital.child_information@brpdb2 WHERE CHILD_ID=:OLD.CHILD_ID;
+--commit;
+end if;
+end;
+
+--UPDATE FIRST NAME TRIGGER
+create or replace NONEDITIONABLE trigger horz_update_f_name_trigger
+after UPDATE on vital.child_information_master
+for each row
+begin
+if(trunc(:new.c_registration_date) - trunc(:new.c_dob) <=90) then
+update vital.child_information@hq set C_FIRST_NAME = :new.C_FIRST_NAME;
+
+elsif(trunc(:new.c_registration_date) - trunc(:new.c_dob) >90) and (trunc(:new.c_registration_date) - trunc(:new.c_dob) <=365)  then
+update vital.child_information@brpdb set C_FIRST_NAME = :new.C_FIRST_NAME;
+else
+update vital.child_information@brpdb2 set C_FIRST_NAME = :new.C_FIRST_NAME;
+end if;
+end;
+
+-- UPDATE MIDDLE NAME TRIGGER
+create or replace NONEDITIONABLE trigger horz_update_m_name_trigger
+after UPDATE on vital.child_information_master
+for each row
+begin
+if(trunc(:new.c_registration_date) - trunc(:new.c_dob) <=90) then
+update vital.child_information@hq set C_MIDDLE_NAME = :new.C_MIDDLE_NAME;
+
+elsif(trunc(:new.c_registration_date) - trunc(:new.c_dob) >90) and (trunc(:new.c_registration_date) - trunc(:new.c_dob) <=365)  then
+update vital.child_information@brpdb set C_MIDDLE_NAME = :new.C_MIDDLE_NAME;
+else
+update vital.child_information@brpdb2 set C_MIDDLE_NAME = :new.C_MIDDLE_NAME;
+end if;
+end;
+
+--UPDATE LAST NAME TRIGGER 
+create or replace NONEDITIONABLE trigger horz_update_l_name_trigger
+after UPDATE on vital.child_information_master
+for each row
+begin
+if(trunc(:new.c_registration_date) - trunc(:new.c_dob) <=90) then
+update vital.child_information@hq set C_LAST_NAME = :new.C_LAST_NAME;
+
+elsif(trunc(:new.c_registration_date) - trunc(:new.c_dob) >90) and (trunc(:new.c_registration_date) - trunc(:new.c_dob) <=365)  then
+update vital.child_information@brpdb set C_LAST_NAME = :new.C_LAST_NAME;
+else
+update vital.child_information@brpdb2 set C_LAST_NAME = :new.C_LAST_NAME;
+end if;
+end;
+
+-- UPDATE SEX TRIGGER 
+create or replace NONEDITIONABLE trigger horz_update_SEX_name_trigger
+after UPDATE on vital.child_information_master
+for each row
+begin
+if(trunc(:new.c_registration_date) - trunc(:new.c_dob) <=90) then
+update vital.child_information@hq set C_SEX = :new.C_SEX;
+
+elsif(trunc(:new.c_registration_date) - trunc(:new.c_dob) >90) and (trunc(:new.c_registration_date) - trunc(:new.c_dob) <=365)  then
+update vital.child_information@brpdb set C_SEX = :new.C_SEX;
+else
+update vital.child_information@brpdb2 set C_SEX = :new.C_SEX;
+end if;
+end;
